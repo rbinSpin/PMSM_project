@@ -1,0 +1,12 @@
+"./DLOG4CHC.obj"
+"./DSP2833x_ADC_cal.obj"
+"./DSP2833x_CodeStartBranch.obj"
+"./DSP2833x_GlobalVariableDefs.obj"
+"./DSP2833x_usDelay.obj"
+"./HVPM_Sensored-DevInit_F2833x.obj"
+"./main.obj"
+"../28335_RAM_lnk.cmd"
+"C:/ti/controlSUITE/device_support/f2833x/v142/DSP2833x_headers/cmd/DSP2833x_Headers_nonBIOS.cmd"
+"C:/ti/c2000/C2000Ware_4_01_00_00/libraries/math/IQmath/c28/lib/IQmath.lib"
+"C:/ti/c2000/C2000Ware_4_01_00_00/libraries/math/IQmath/c28/lib/IQmath_fpu32.lib"
+-llibc.a

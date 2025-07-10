@@ -1,0 +1,16 @@
+
+**** Build of configuration Debug for project PMSM_28335 ****
+
+"C:\\ti\\ccs1200\\ccs\\utils\\bin\\gmake" -k -j 8 all -O 
+ 
+Building target: "PMSM_28335.out"
+Invoking: C2000 Linker
+"C:/ti/ccs1200/ccs/tools/compiler/ti-cgt-c2000_22.6.0.LTS/bin/cl2000" -v28 -ml -mt --float_support=fpu32 -O4 --opt_for_speed=5 -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=coffabi -z -m"PMSM_28335.map" --stack_size=0x300 --warn_sections -i"C:/ti/ccs1200/ccs/tools/compiler/ti-cgt-c2000_22.6.0.LTS/lib" -i"C:/ti/ccs1200/ccs/tools/compiler/ti-cgt-c2000_22.6.0.LTS/include" --reread_libs --diag_wrap=off --display_error_number --xml_link_info="PMSM_28335_linkInfo.xml" --rom_model -o "PMSM_28335.out" "./DLOG4CHC.obj" "./DSP2833x_ADC_cal.obj" "./DSP2833x_CodeStartBranch.obj" "./DSP2833x_GlobalVariableDefs.obj" "./DSP2833x_usDelay.obj" "./HVPM_Sensored-DevInit_F2833x.obj" "./main.obj" "./spi_transfer.obj" "../28335_RAM_lnk.cmd" "../DSP2833x_Headers_nonBIOS.cmd" "../IQmath_fpu32.lib" "../rts2800_fpu32_fast_supplement.lib"  -llibc.a 
+<Linking>
+warning #10207-D: resolving index library "IQmath_fpu32.lib" to "IQmath_fpu32_coff.lib", but "IQmath_fpu32_coff.lib" was not found
+warning #10207-D: resolving index library "rts2800_fpu32_fast_supplement.lib" to "rts2800_fpu32_fast_supplement_coff.lib", but "rts2800_fpu32_fast_supplement_coff.lib" was not found
+warning #10247-D: creating output section "EPwm7RegsFile" without a SECTIONS specification
+Finished building target: "PMSM_28335.out"
+ 
+
+**** Build Finished ****
