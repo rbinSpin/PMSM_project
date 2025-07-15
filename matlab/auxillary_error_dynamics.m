@@ -1,7 +1,7 @@
-function dx = error_dynamics(~, x_tilde, x_hat, param)
+function dx = auxillary_error_dynamics(~, x, x_hat, u_tilde, param)
 
     % 還原實際狀態
-    x = x_tilde + x_hat;
+    x_tilde = x - x_hat;
     omega_e = x(1);
     iq = x(2);
     id = x(3);
@@ -34,7 +34,7 @@ function dx = error_dynamics(~, x_tilde, x_hat, param)
     R = eye(2);
 
     % 使用 SDA_CARE 求 Riccati 解
-    [P, ~] = SDA_CARE(A, B, Q, R);  % 你自定義的 Riccati 求解器
+    [P, ~] = SDA_CARE(A, B, Q, R);  % 你自定義的 Riccati 求解器 %% 改成 4*4
     K = R \ (B' * P);               % 回授增益
 
     % 控制律

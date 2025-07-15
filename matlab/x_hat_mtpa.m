@@ -5,8 +5,8 @@ function x_hat = x_hat_mtpa(omega_e, param)
     J = param.J;
     Ld = param.Ld;
     Lq = param.Lq;
-    lambda_m = param.lambda_m;
-    p = param.p;
+    lambda_m = param.Lamda_f;
+    p = param.pole;
 
     % Step 1: 給定 omega_e（PU），計算 Te（PU）
     Te = B * omega_e;  % 忽略負載力矩 TL
@@ -16,14 +16,8 @@ function x_hat = x_hat_mtpa(omega_e, param)
     b = (3/2)*(p/2)*lambda_m;
 
     iq_roots = roots([a, 0, b, -Te]);
-    iq_real = iq_roots(imag(iq_roots) == 0);  % 實根
-    iq = iq_real(iq_real >= 0);              % 正實根
-
-    if isempty(iq)
-        iq = 0;
-    else
-        iq = iq(1);  % 選擇最小正實根（MTPA 一般只有一個）
-    end
+    iq = iq_roots(imag(iq_roots) == 0);  % 實根
+    iq = iq(1);  % 選擇最小正實根（MTPA 一般只有一個）
 
     % Step 3: 對應 MTPA id
     id = (Ld - Lq)/lambda_m * iq^2;
