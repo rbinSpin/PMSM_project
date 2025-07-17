@@ -1,4 +1,5 @@
 clc; clear;
+
 %% Get the param
 pm_params_pu;
 
@@ -30,11 +31,14 @@ ic = [x - x_hat(:, 1); z];  % 初始誤差
 
 %% for loop
 h = waitbar(0, 'Please wait...');
+u_tilde_log = zeros(2, length(ticks));   % 2 是控制量維度
+x_tilde_auxi_log = zeros(4, length(ticks));   % 4 是狀態變數維度
 
 for i=1:length(ticks)
     % 計算誤差
     x_tilde = x - x_hat(:, i);
     x_tilde_auxi = [x_tilde; z];
+    x_tilde_auxi_log(:, i) = x_tilde_auxi;
 
     % A_auxi(x_tilde_auxi,x_hat,param)
     A_auxi = A_auxi_fun(x_tilde_auxi,x_hat,param);
@@ -53,6 +57,8 @@ for i=1:length(ticks)
     % 解 SDRE 控制律 (K)
     [P_ss_care, ~] = SDA_CARE(A_auxi, B_auxi, Q, R);
     u_tilde = -inv(R) * B_auxi' * P_ss_care * x_tilde_auxi;
+    u_tilde_log(:, i) = u_tilde;
+
     
     % 輸入電壓指令並模擬 1e-5s 
     tspan = [0 1e-5];
@@ -73,3 +79,40 @@ for i=1:length(ticks)
 end
 
 close(h);
+
+
+%% 作圖
+% 1. 需求速度與需求 id, iq
+figure;
+plot(ticks, x_hat(1, :), 'r-', ...
+     ticks, x_hat(2, :), 'b--', ...
+     ticks, x_hat(3, :), 'g-.');
+xlabel('Time (s)');
+ylabel('x_{hat}');
+legend('omaga_hat', 'iq_hat', 'id_hat');
+title('reference');
+grid on;
+
+
+
+
+% 2. u_tilde to times
+figure;
+plot(ticks, u_tilde_log(1, :), 'r-', ticks, u_tilde_log(2, :), 'b--');
+xlabel('Time (s)');
+ylabel('u_{tilde}');
+legend('u_1', 'u_2');
+title('Control Input History');
+grid on;
+
+% 3. x_tilde_auxi_log(ode45 final each iter) to times 
+figure;
+plot(ticks, x_tilde_auxi_log(1, :), 'r-', ...
+     ticks, x_tilde_auxi_log(2, :), 'b--', ...
+     ticks, x_tilde_auxi_log(3, :), 'g-.', ...
+     ticks, x_tilde_auxi_log(4, :), 'k:');
+xlabel('Time (s)');
+ylabel('x_{tilde\_auxi}');
+legend('x_1', 'x_2', 'x_3', 'z');
+title('State Trajectories');
+grid on;
