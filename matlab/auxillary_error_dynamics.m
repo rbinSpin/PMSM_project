@@ -5,7 +5,7 @@ function dx = auxillary_error_dynamics(~, x_tilde_auxi, u_tilde, A_auxi, B_auxi)
  %    input voltage command until next time we command the driver.(10kHz)   
  % 3. Also, notice that B_auxi is always constant.                          
  % 
-
+    
     % 誤差動態方程
     dx = A_auxi * x_tilde_auxi + B_auxi * u_tilde;
 end

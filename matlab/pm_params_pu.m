@@ -34,3 +34,18 @@ param.Xqpu = param.Lq * param.wb / param.Zb;
 param.Lamda_fpu = param.Lamda_f / param.Lamdab;
 param.Jpu = param.J * param.wb / param.Tb;
 param.Bpu = param.B * param.wb / param.Tb;
+
+
+param.k1 = (3/2) * (param.pole/2)^2 / param.J * param.Lamda_f / param.wb;
+param.k2 = param.B / param.J;
+param.k3 = (param.pole/2) / param.J / param.wb;
+param.k4 = param.Rs / param.Lq;
+param.k5 = param.Lamda_f * param.wb / (param.Lq * param.Ib);
+param.k6 = 1 / param.Lq * param.Vb / param.Ib;
+param.k7 = param.Rs / param.Ld;
+param.k8 = 1 / param.Ld * param.Vb / param.Ib;
+param.k9 = param.Lq / param.Ld * param.wb;
+param.k10 = param.Ld / param.Lq * param.wb;
+param.k11 = (3/2) * (param.pole/2)^2 / param.J * (param.Ld - param.Lq) * (param.Ib^2) / param.wb;
+
+param.eta = 10;
