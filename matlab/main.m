@@ -3,9 +3,23 @@ clc; clear;
 %% Get the param
 pm_params_pu;
 
+HUNDRED_kHz = true; TEN_kHz = false;
+Q_ORIGIN = true; QZ0 = false;
+SDA = true; ICARE = false;
+
+SEL_PERIOD = HUNDRED_kHz;
+SEL_Q      = QZ0;
+SEL_SOLVER = ICARE;
+
 %% Offline MTPA  
-% 模擬時間  
-period = 1e-5;  
+% 模擬時間
+if SEL_PERIOD
+    period = 1e-5;
+else
+    period = 1e-4;
+end
+
+tspan = [0 period];
 T = 0.5;  
 ticks = 0:period:T;  
 
@@ -42,7 +56,7 @@ end
 %% Simulation
 % initialization
 x = [0; 0; 0]; % system state [omega; iq; id]
-z = 1e-4;
+z = 1;
 ic = [x - x_hat(:, 1); z];  % 初始誤差
 
 % for loop
@@ -53,8 +67,6 @@ n_loop = length(ticks);
 u_tilde_log = zeros(2, n_loop);        % 2 是控制量維度
 x_tilde_auxi_log = zeros(4, n_loop);   % 4 是狀態變數維度
 x_log = zeros(3, n_loop);              % 3 是系統狀態維度
-t_all_cell = cell(1, n_loop);
-x_all_cell = cell(1, n_loop);
 
 for i=1:length(ticks)
     % 計算誤差
@@ -73,25 +85,30 @@ for i=1:length(ticks)
     
     % Q, R 矩陣
     rate = sqrt(x_tilde(2)^2 + x_tilde(3)^2);
-    Q = diag([5000, 1 + exp(-rate), 10000 + exp(-rate), 100]);  % z 的權重 100，可調
+    if SEL_SOLVER
+        Q = diag([5000, 1 + exp(-rate), 10000 + exp(-rate), 100]);  % z 的權重 100，可調
+    else
+        Q = diag([5000, 10000 + exp(-rate), 10000 + exp(-rate), 0]);
+    end
+    
     R = diag([1 1]);
     
     % 解 SDRE 控制律 (K)
-    [P_ss_care, ~] = SDA_CARE(A_auxi, B_auxi, Q, R);
+    if SEL_Q
+        [P_ss_care, ~] = SDA_CARE(A_auxi, B_auxi, Q, R);
+    else
+        [P_ss_care, ~] = icare(A_auxi, B_auxi, Q, R, zeros(size(B_auxi)), eye(size(A_auxi)));
+    end
+
     u_tilde = -inv(R) * B_auxi' * P_ss_care * x_tilde_auxi;
     u_tilde_log(:, i) = u_tilde;
 
     
-    % 輸入電壓指令並模擬 1e-5s 
-    tspan = [0 1e-5];
+    % 輸入電壓指令並模擬 period
     [t,x_tilde_auxi] = ode45( ...
         @(t,x_tilde_auxi) auxillary_error_dynamics(t, x_tilde_auxi, u_tilde, x_hat(:, i), param, B_auxi), ...
         tspan, ...
         ic);
-
-    % 把這次的結果 append 起來
-    t_all_cell{i} = t + (i-1)*1e-5;
-    x_all_cell{i} = x_tilde_auxi;  
     
     % 更新 system state
     x_tilde_auxi = x_tilde_auxi(end, :).';  % 取最後一列，轉成 column vector
@@ -105,10 +122,6 @@ end
 
 close(h);
 
-% 需要時再用 cell2mat 拼接
-t_all = cell2mat(t_all_cell');
-x_all = cell2mat(x_all_cell');
-
 
 %% save the simulation data
-save('simulation_result.mat', 'ticks','x_hat', 'u_tilde_log', 'x_tilde_auxi_log', 'x_log', 'x_all', 't_all');
+save('simulation_result.mat', 'ticks','x_hat', 'u_tilde_log', 'x_tilde_auxi_log', 'x_log');

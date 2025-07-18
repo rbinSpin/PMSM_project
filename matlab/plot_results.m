@@ -69,21 +69,3 @@ grid on;
 if SAVE_PICTURES
     saveas(gcf, 'matlab_figures/fig4_x_log.png');
 end
-
-
-% 5. x_tilde_auxi_log to t (all ode45 sol each iteration)
-figure;
-plot(t_all, x_all(:, 1), 'r-', ...
-     t_all, x_all(:, 2), 'b--', ...
-     t_all, x_all(:, 3), 'g-.', ...
-     t_all, x_all(:, 4), 'k:');
-xlabel('Time (s)');
-ylabel('$\tilde{x}_{auxi}$', 'Interpreter', 'latex', 'Rotation', 0);
-legend('$\tilde{\omega} (pu)$', '$\tilde{i_q} (pu)$', '$\tilde{i_d} (pu)$', '$z$', 'Interpreter', 'latex');
-title('State Error Trajectories (from ode45)');
-grid on;
-xlim([0, max(t_all)]);  % 限制 x 軸到資料最大值
-
-if SAVE_PICTURES
-    saveas(gcf, 'matlab_figures/fig5_x_all_ode45.png');
-end
