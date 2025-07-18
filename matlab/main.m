@@ -8,8 +8,8 @@ Q_ORIGIN = true; QZ0 = false;
 SDA = true; ICARE = false;
 
 SEL_PERIOD = HUNDRED_kHz;
-SEL_Q      = QZ0;
-SEL_SOLVER = ICARE;
+SEL_Q      = Q_ORIGIN;
+SEL_SOLVER = SDA;
 
 %% Offline MTPA  
 % 模擬時間
@@ -105,10 +105,12 @@ for i=1:length(ticks)
 
     
     % 輸入電壓指令並模擬 period
+    opts = odeset('MaxStep', period, 'InitialStep', period, 'RelTol', 1e-3, 'AbsTol', 1e-6);
     [t,x_tilde_auxi] = ode45( ...
         @(t,x_tilde_auxi) auxillary_error_dynamics(t, x_tilde_auxi, u_tilde, x_hat(:, i), param, B_auxi), ...
         tspan, ...
-        ic);
+        ic,...
+        opts);
     
     % 更新 system state
     x_tilde_auxi = x_tilde_auxi(end, :).';  % 取最後一列，轉成 column vector
